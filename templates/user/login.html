@@ -1,0 +1,230 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block head_files %}
+    <link rel="stylesheet" href="{% static 'css/user/partials/iconHideShow.css' %}">
+    <style>
+        body{
+            background-color: rgb(83, 79, 79) !important;
+            height: 100vh !important;
+        }
+
+        a{
+            text-decoration: none !important;
+        }
+
+        #pswForget{
+            color: black !important;
+            margin-bottom: 20px !important;
+        }
+
+        #container-login{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        #login{
+            margin: auto !important;
+        }
+
+        #backPage{
+            position: absolute;
+            top: 5%;
+        }
+
+        #backPage a{
+            background-color: rgb(45, 45, 45) !important;
+        }
+
+        .card-col-1{
+            background-color: #D9D9D9 !important;
+            padding: 5% !important;
+            border-radius: 10px 0 0 10px !important;
+        }
+
+        .card-col-2{
+            padding: 10% !important;
+            color: white !important;
+            border-radius: 0px 10px 10px 0px !important;
+        }
+
+        .card-col-1 button{
+            color: white !important;
+            font-weight: 600 !important;
+            background-color: rgb(45, 45, 45) !important;
+        }
+
+        .card-col-2 button{
+            border-color: white !important;
+            border-width: 2px !important;
+            font-weight: 600 !important;
+            color: white !important;
+            background-color: transparent !important;
+            margin-top: 20% !important;
+        }
+
+        @media(max-width:768px){
+            .card-col-1{
+                border-radius: 10px 10px 0 0 !important;
+            }
+            .card-col-2{
+                border-radius: 0px 0px 10px 10px !important;
+                padding: 5% !important;
+            }
+            .card-col-2 button{
+                margin-top: 2% !important;
+            }
+            #login{
+                margin-bottom: 10% !important;
+            }
+        }
+
+        .bg-card{
+            background: linear-gradient(90deg, transparent 0%, rgb(45, 45, 45) 100%);
+            backdrop-filter: blur(20px) !important;
+        }
+
+        /* CSS for Google Sign-In button */
+        #googleSignIn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #googleSignInButton {
+            background-color: #fff;
+            color: #000;
+            border: none;
+            font-size: 14px;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+{% endblock %}
+
+
+{% block content %}
+    <div id="backPage">
+        <a class="btn btn-dark" href="{% url 'chat' %}">
+            <img src="{% static 'icon/turn-back.png' %}" alt="back" style="width: 2vw;">
+        </a>
+    </div>
+    <div id="container-login">
+        <div class="w-75 content-row-center p-5" id='login'>
+            <div class="container-fluid">
+                <div class="row shadow">
+                    <div class="col-md-6 col-12 card-col-1">
+                        <div class="text-center p-2">
+                            <h3>Sign In</h3>
+                            <br>
+                            <!-- Google Sign-In button -->
+                            <div id="googleSignIn">
+                                <div id="googleSignInButton" class="btn">
+                                    <img style="width: 1.5vw;" src="{% static 'icon/google.png' %}" alt="google">
+                                </div>
+                            </div>
+                            <br>
+                            <form class="m-auto" action="{% url 'login' %}" method="post">
+                                {% csrf_token %}
+                                {% if error %}
+                                    <div class="alert alert-danger">
+                                        {{error}}
+                                    </div>
+                                {% endif %}
+                                <input type="email" placeholder="Email" class="form-control" name="email">
+                                <br>
+                                <div class="input-group">
+                                    <input type="password" placeholder="Password" class="form-control" id="hideShow" name="password">
+                                    <label for="password">
+                                        <img style="width: 1vw;" src="{% static 'icon/hide.png' %}" alt="icon" id="iconHideShow" name="iconHideShow" onClick="changeIcon()" class="hide-show">
+                                    </label>
+                                </div>
+                                <br>
+                                <a href="{% url 'pswForget' %}" id="pswForget" class="btn"><div>Forget Password?</div></a>
+                                <br>
+                                <button class="btn btn-sm rounded rounded-5 video-wrap" id="btnCamera">SIGN IN</button>
+                                <hr>
+                                <a style="font-size: 14px;" href="/admin/panel/login/" class="btn fst-italic"><div>Admin Login</div></a>
+                            </form>
+                        </div>
+                    </div>
+    
+                    <div class="col-md-6 col-12 card-col-2 bg-card text-center">
+                        <h3>Hello User !</h3>
+                        <p class="fst-italic">If you want to review your documents with AI and make your work easier, sign up now !</p>
+                        <a href="{% url 'register' %}">
+                            <button class="btn btn-sm rounded rounded-5">SIGN UP</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+
+{% block js_files %}
+    <script>
+        function changeIcon(){
+            var icon =document.getElementById('iconHideShow')
+            if (icon.className == "hide-show") {
+                document.getElementById('iconHideShow').src = "/static/icon/show.png"
+                document.getElementById('hideShow').type = 'text';
+                icon.classList.remove('hide-show');
+                icon.classList.add('show-hide');
+            } 
+            else if(icon.className == "show-hide") {
+                document.getElementById('iconHideShow').src = "/static/icon/hide.png"
+                document.getElementById('hideShow').type = 'password';
+                icon.classList.remove('show-hide');
+                icon.classList.add('hide-show');
+            }
+        }
+        
+        // Function to handle successful Google sign-in
+        function onGoogleSignIn(googleUser) {
+            var profile = googleUser.getBasicProfile();
+            var email = profile.getEmail();
+            var name = profile.getName();
+            // Perform any additional actions or submit the form as needed
+        }
+
+        // Function to handle Google sign-in error
+        function onGoogleSignInError(error) {
+            console.error('Google Sign-In Error:', error);
+        }
+
+        // Function to initialize Google Sign-In
+        function initGoogleSignIn() {
+            gapi.load('auth2', function() {
+                gapi.auth2.init({
+                    client_id: 'YOUR_GOOGLE_CLIENT_ID',
+                    // Add any additional parameters or configurations as needed
+                }).then(function(auth2) {
+                    var googleSignInButton = document.getElementById('googleSignInButton');
+                    googleSignInButton.addEventListener('click', function() {
+                        auth2.signIn().then(onGoogleSignIn, onGoogleSignInError);
+                    });
+                });
+            });
+        }
+
+        // Load the Google Sign-In API script asynchronously
+        function loadGoogleSignInAPI() {
+            var script = document.createElement('script');
+            script.src = 'https://apis.google.com/js/platform.js';
+            script.onload = function() {
+                initGoogleSignIn();
+            };
+            document.head.appendChild(script);
+        }
+
+        // Call the function to load Google Sign-In API
+        loadGoogleSignInAPI();
+    </script>
+{% endblock js_files %}

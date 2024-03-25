@@ -1,0 +1,610 @@
+{% load static %}
+
+{% block head_files %}
+    <link href="{% static 'css/partials/_nav.css' %}" rel="stylesheet">
+    <style>
+        #premiumBg {
+            letter-spacing: 1px;
+            background-image: linear-gradient(
+                to right,
+                #90653f 0%, 
+                #be7f4f 11%,
+                #cb9b51 22%, 
+                #ead56c 45%,
+                #e7d167 55%,
+                #cb9b51 78%,
+                #90653f 100%
+                );
+            color:black;
+        }
+
+        #premiumText {
+            letter-spacing: 1px;
+            background-color: transparent;
+            background-image: linear-gradient(
+                to right,
+                #90653f 0%, 
+                #be7f4f 11%,
+                #cb9b51 22%, 
+                #ead56c 45%,
+                #e7d167 55%,
+                #cb9b51 78%,
+                #90653f 100%
+                );
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .dropdown-menu-dark{
+            background-color: rgb(83, 79, 79) !important;
+        }
+
+        #settingsModal {
+            display: none; /* Başlangıçta gizli olsun */
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+            background-color: rgba(0, 0, 0, 0.5); /* Arka planı yarı saydam siyah */
+            backdrop-filter: blur(8px); /* Arka planı blur yap */
+            z-index: 9999; /* Diğer içeriklerden üstte görünsün */
+        }
+
+        #settingsModal .modal-content {
+            background-color: transparent !important;
+        }
+
+        a{
+            text-decoration: none !important;
+        }
+
+        #container-settings{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+            background-color: transparent !important;
+        }
+
+        #settings{
+            margin: auto !important;
+            background-color: transparent !important;
+        }
+
+        #backPage{
+            position: absolute;
+            top: 5%;
+        }
+
+        #backPage a{
+            background-color: rgb(45, 45, 45) !important;
+        }
+
+        .card-col-1{
+            background-color: rgb(45, 45, 45) !important;
+            padding: 1% !important;
+            padding-top: 2% !important;
+            border-radius: 10px 0 0 10px !important;
+            height: 70vh;
+        }
+
+        .card-col-2{
+            padding-top: 3% !important;
+            padding-left: 5% !important;
+            padding-right: 5% !important;
+            color: white !important;
+            border-radius: 0px 10px 10px 0px !important;
+            height: 70vh;
+        }
+
+        @media(max-width:768px){
+            .card-col-1{
+                border-radius: 10px 10px 0 0 !important;
+            }
+            .card-col-2{
+                border-radius: 0px 0px 10px 10px !important;
+                padding: 5% !important;
+            }
+            #settings{
+                margin-bottom: 10% !important;
+            }
+        }
+
+        .bg-card{
+            background: linear-gradient(90deg, transparent 0%, rgb(27, 27, 27) 100%);
+            backdrop-filter: blur(20px) !important;
+        }
+
+        .bg-input{
+            color: white !important;
+            background: linear-gradient(90deg, #272525 0%, #1f1e1e 100%);
+            backdrop-filter: blur(20px) !important;
+        }
+
+        .dropdown-menu-dark{
+            background-color: rgb(27, 27, 27) !important;
+        }
+
+        #dropMenu{
+            font-family: monospace !important;
+            letter-spacing: 2px !important;
+            width: 19vw !important;
+            position: absolute !important;
+            bottom: 9vh !important;
+        }
+        
+        .dropdown-item{
+            padding: 10px !important;
+            margin-left: 10px !important;
+            margin-right: 10px !important;
+            width: 17.5vw !important;
+        }
+
+        .dropdown-item:hover{
+            background-color: rgb(45, 45, 45) !important;
+            border-radius: 10px !important;
+        }
+
+        .dropİtem{
+            padding: 10px !important;
+            margin-left: 3px !important;
+            margin-right: 3px !important;
+        }
+
+        .dropİtem:hover{
+            background-color: rgb(27, 27, 27) !important;
+            border-radius: 10px !important;
+        }
+
+        .scroll-container {
+            height: 50vh !important;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .content-scroll {
+            text-align: justify;
+            overflow-y: scroll;
+            position: absolute;
+            animation: scrollAnimation 20s linear infinite;
+        }
+
+        .upload-box-image{
+            background-color: rgba(27, 27, 27, 0.9) !important;
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+        }
+
+        .upload-content-image{
+            background-color: rgba(21, 21, 21, 0.8) !important;
+            display: grid !important;
+            place-items: center !important;
+        }
+        
+        .button-image{
+            background-color: rgba(37, 36, 36, 0.3) !important;
+            color: white !important;
+            border-color: white !important;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .button-image:hover {
+            background-color: #1a1919;
+            border-color: white !important;
+            transform: translateY(-2px);
+        }
+
+        .button-image:active {
+            transform: translateY(0);
+        }
+
+        @keyframes scrollAnimation {
+            0% {
+                transform: translateY(0);
+            }
+            100% {
+                transform: translateY(-100%);
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="nav-container">
+    {% if user.is_authenticated %}
+        <div>
+            <form method="post" enctype="multipart/form-data" class="mt-3">
+                {% csrf_token %}
+                <div class="upload-container">
+                    <input id="file-input" name="file" type="file" style="display: none;" onchange="updateFile(event);">
+                    <label for="file-input" class="rounded rounded-5 upload-box btn" style="height: 20vh; width: 10vw;">
+                        <div class="rounded rounded-4 upload-content shadow" style="height: 15vh; width: 8vw;">
+                            <img id="upload-file" class="text-white" style="width: 5vw; cursor: pointer; font-size: larger;" src="{% static 'icon/document.png' %}" alt="file">
+                        </div>
+                    </label>
+                    <div class="button-container">
+                        <input id="submit-button" type="submit" value="Upload" class="button btn m-3" style="width: 8vw;" disabled>
+                    </div>
+                    {% if form.file.errors %}
+                        <ul class="errorlist">
+                            {% for error in form.file.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+        <div class="content-row-center">
+            <div class="box-container">
+                <div class="scrollable">
+                    <form method="post" action="{% url 'chat' %}">
+                        {% for doc in user.documents.all %}
+                            {% csrf_token %}
+                            {% if doc.isActive %}
+                                <button class="document btn {% if activeDoc == doc %}active{% endif %}" style="width: 18vw;" type="submit" onclick="docButton(this, '{{ doc.id }}', 'text-form')" name="" value="{{ doc.id }}" id="{{ doc.id }}">
+                                    <div class="row">
+                                        <div class="col-8 me-1 doc-name">
+                                            <div class="scrolling-text">{{ doc.title }}</div>
+                                        </div>
+                                        <div class="col-3 ms-1 doc-format" id="showPart">{{ doc.type }}</div>
+                                        <div class="col-3 ms-1 doc-format hidden" id="hiddenPart" onclick="imgButton(this)">
+                                            <img class="img-icon" id="showImg" style="width: 15px;" src="{% static 'icon/clear.png' %}">
+                                            <img class="img-icon hidden" id="hiddenImg" style="width: 15px;" src="{% static 'icon/confirm.png' %}">
+                                        </div>
+                                    </div>
+                                </button>
+                            {% endif %}
+                        {% endfor %}
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="row m-2 content-row-center mt-2">
+            <button id="clearAllButton" class="col-7 text-center me-2 btn text-white clear-btn" onclick="clearAllButton()">Clear All</button>
+            <button id="confirmButton" class="col-7 text-center me-2 btn text-white clear-btn hidden" onclick="clearAllButton()">
+                <img class="img-icon" style="width: 15px;" src="{% static 'icon/confirm.png' %}">
+            </button>
+        </div>
+        <hr>
+        <div class="mx-4" style="color: white; text-decoration: none;">
+            {% if user.isPremium %}
+                <div class="row font-monospace m-auto align-items-center" style="font-size: smaller;">
+                    <div class="col-8 text-start fw-light fst-italic">
+                        Premium Account
+                    </div>
+                    <!-- href => source for upgrade premium -->
+                    <a href="#" class="col-4 text-end " style="text-decoration: none;">
+                        <div id="premiumText" class="d-inline px-2 text-center text-black rounded rounded-2" style="font-weight: 900;">
+                            PLAN
+                        </div>
+                    </a>
+                </div> 
+            {% else %}
+                <div class="row font-monospace m-auto align-items-center" style="font-size: smaller;">
+                    <div class="col-8 text-start fw-light fst-italic">
+                        Free Account
+                    </div>
+                    <!-- href => source for upgrade premium -->
+                    <a href="#" class="col-4 text-end " style="text-decoration: none;">
+                        <div id="premiumBg" class="d-inline px-2 text-center text-black fw-bolder rounded rounded-2">
+                            UPGRADE
+                        </div>
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    {% else %}
+        <hr>
+        <div class="mx-4 mt-5 font-monospace fst-italic fw-lighter text-start" style="letter-spacing: 1px; font-size: 13px;">
+            <h4>WELCOME!!</h4>
+            <br>
+            <div class="scroll-container" id="scroll-info-container">
+                <div class="content-scroll">
+                    <li>Select your document first.</li>
+                    <br>
+                    <li>The document format you choose should be pdf,txt,doc,docx.</li>
+                    <br>
+                    <li>For Free Account, pay attention to the number of documents not more than 5.</li>
+                    <br>
+                    <li>The document you choose will train itself with artificial intelligence.</li>
+                    <br>
+                    <li>ChatDoc will answer the questions you will ask from the document content.</li>
+                    <br>
+                    <li>Premium Account feature; Adding more than 5 documents, 10000 word infrastructure and parsed artificial intelligence training right.</li>
+                    <br>
+                    <li>Free Account feature; limited 5 documents, limited 1000 word infrastructure and limited AI training rights.</li>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    
+    <div class="row btn mx-4 p-2 content-row-center mt-4 border border-1 rounded rounded-4 btn-group dropup" style="position: absolute; top: 85vh; width: 20vw;">
+        <div class="row align-items-center" aria-expanded="false">
+            <div class="col-3">
+                {% if user.is_authenticated %}
+                    <img class="text-center rounded rounded-3" style="width: 2.5vmax; height: 2.5vmax;" 
+                        src="{% if user.image %}{{ user.image }}{% else %}{% static 'icon/profile-user.png' %}{% endif %}" alt="">
+                {% else %}
+                    <img class="text-center rounded rounded-3" style="width: 2.5vw;" 
+                            src="{% static 'icon/profile-user.png' %}" alt="">
+                {% endif %}
+            </div>
+            <div class="col-7 text-start text-white">
+                {% if user.is_authenticated %}
+                    <h6 style="margin: 0;">{{user.get_full_name|title }}</h6>
+                {% else %}
+                    <h6 style="margin: 0;">PROFILE</h6>
+                {% endif %}
+            </div>
+            <button class="col-2 text-end align-items-center" type="button" style="background-color: transparent; border: none;">
+                <img style="width: 1vw;" src="{% static 'icon/more.png' %}" alt="more">
+            </button>
+        </div>
+        <ul id="dropMenu" class="dropdown-menu dropdown-menu-dark text-center rounded rounded-4">
+            {% if user.is_authenticated %}
+                <li class="dropdown-item">
+                    <a style="text-decoration: none;" class="text-white row text-start" onclick="openSettingsModal()">
+                        <img src="{% static 'icon/setting.png' %}" class="ms-1 col-2" alt="setting" style="width: 3vw; height: 3vh;">
+                        <div class="col">SETTINGS</div>
+                    </a>
+                </li>
+                <hr>
+                <li class="dropdown-item">
+                    <a href="{% url 'logout' %}" style="text-decoration: none;" class="text-white row text-start">
+                        <img src="{% static 'icon/sign-out.png' %}" class="ms-1 col-2" alt="sign-out" style="width: 3vw; height: 3vh;">
+                        <div class="col">SIGN OUT</div>
+                    </a>
+                </li>
+            {% else %}
+                <li class="dropdown-item">
+                    <a href="{% url 'login' %}" style="text-decoration: none;" class="text-white row text-start">
+                        <img src="{% static 'icon/sign-in.png' %}" class="ms-1 col-2" alt="sign-in" style="width: 3vw; height: 3vh;">
+                        <div class="col">SIGN IN</div>
+                    </a>
+                </li>
+                <br>
+                <li class="dropdown-item">
+                    <a href="{% url 'register' %}" style="text-decoration: none;" class="text-white row text-start">
+                        <img src="{% static 'icon/sign-up.png' %}" class="ms-1 col-2" alt="sign-up" style="width: 3vw; height: 3vh;">
+                        <div class="col">SIGN UP</div>
+                    </a>
+                </li>
+            {% endif %}
+            
+        </ul>
+    </div>
+
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <div id="container-settings">
+                <div class="w-75 content-row-center p-5" id='settings'>
+                    <div class="container-fluid">
+                        <div class="row shadow">
+
+                            <div class="col-md-2 col-12 card-col-1">
+                                <div class="row text-center dropİtem" onclick="showSetting()">
+                                    <img src="{% static 'icon/edit.png' %}" class="col-2" style="width: 3vw; height: 2.5vh;" alt="edit">
+                                    <div class="col">Edit</div>
+                                </div>
+                                <hr>
+                                <div class="row text-center dropİtem" onclick="showHelp()">
+                                    <img src="{% static 'icon/help.png' %}" class="col-2" style="width: 3vw; height: 3vh;" alt="help">
+                                    <div class="col">Help</div>
+                                </div>
+                                <hr>
+                            </div>
+            
+                            <div class="col-md-10 col-12 card-col-2 bg-card text-center">
+                                <div id="showSetting" style="display: block;">
+                                    <div class="w-100 text-end">
+                                        <button class="btn rounded rounded-3" onclick="btnCloseShow()">
+                                            <img src="{% static 'icon/close.png' %}" alt="close" style="width: 1.5vw;">
+                                        </button>
+                                    </div>
+                                    <hr>
+                                    <div class="row mt-4">
+                                        <form method="post" enctype="multipart/form-data" class="col">
+                                            {% csrf_token %}
+                                            <div class="upload-container">
+                                                <input id="image-input" name="image" type="file" style="display: none;" accept="image/*" onchange="updateImage(event);">
+                                                <div class="m-1 fs-4 fst-italic">Profile</div>
+                                                <div class="row w-100">
+                                                    <!-- RESİM YÜKLEME -->
+                                                    <div class="col-3 text-center">
+                                                        <label for="image-input" style="display: inline;" class="rounded rounded-5 upload-box-image btn" style="height: 20vh; width: 10vw; text-align: start;">
+                                                            <div class="rounded rounded-4 upload-content-image shadow" style="height: 15vh; width: 8vw;">
+                                                                <img id="upload-image" class="text-white" style="width: 5vw; height: 5vmax; cursor: pointer; font-size: larger;" src="{% if user.image %}{{ user.image }}{% else %}{% static 'icon/gallery.png' %}{% endif %}" alt="image">
+                                                            </div>
+                                                        </label>
+                                                        <div class="button-container" style="display: inline;">
+                                                            <input id="submit-button-image" type="submit" value="Upload" class="button-image btn m-3" style="width: 8vw;" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <!-- Info Guncelleme -->
+                                                    <div class="col text-white">
+                                                        <input name="name" type="text" class="form-control m-2 bg-input border-black" value="{{ user.first_name }}" required onchange="enableUpdateButton();">
+                                                        <input name="surname" type="text" class="form-control m-2 bg-input border-black" value="{{ user.last_name }}" required onchange="enableUpdateButton();">
+                                                        <input name="email" type="email" class="form-control m-2 bg-input border-black" value="{{ user.email }}" required onchange="enableUpdateButton();">
+                                                        <div class="button-container" style="display: inline;">
+                                                            <input id="submit-button-info" type="submit" value="Save" class="button-image btn m-3" style="width: 8vw;" disabled>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {% if form.image.errors %}
+                                                    <ul class="errorlist">
+                                                        {% for error in form.image.errors %}
+                                                            <li>{{ error }}</li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                {% endif %}
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <hr>
+                                    <div class="row mt-4">
+                                        <div class="col text-start">
+                                            Delete account
+                                        </div>
+                                        <button id="deleteButton" class="btn btn-danger col-2 me-2">
+                                            Delete
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div id="showHelp" style="display: none;">
+                                    <div class="w-100 text-end">
+                                        <button class="btn rounded rounded-3" onclick="btnCloseShow()">
+                                            <img src="{% static 'icon/close.png' %}" alt="close" style="width: 1.5vw;">
+                                        </button>
+                                    </div>
+                                    <h4 class="font-monospace fs-4 text-start ms-4">HOW TO USE?</h4>
+                                    <hr>
+                                    <div class="font-monospace fw-lighter fst-italic text-start" style="letter-spacing: 1px;">
+                                        1- Select your document first.
+                                        <br>
+                                        2- The document format you choose should be pdf,txt,doc,docx.
+                                        <br>
+                                        3- For Free Account, pay attention to the number of documents not more than 5.
+                                        <br>
+                                        4- The document you choose will train itself with artificial intelligence.
+                                        <br>
+                                        5- ChatDoc will answer the questions you will ask from the document content.
+                                        <br>
+                                        6- Premium Account feature; Adding more than 5 documents, 10000 word infrastructure and parsed artificial intelligence training right.
+                                        <br>
+                                        7- Free Account feature; limited 5 documents, limited 1000 word infrastructure and limited AI training rights.
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block js_files %}
+    <script src="{% static 'js/partials/_nav.js' %}"></script>
+    <script>
+        // CSRF token'ını cookie'den almak için yardımcı fonksiyon
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== "") {
+                var cookies = document.cookie.split(";");
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    // CSRF token'ı içeren cookie'yi bul
+                    if (cookie.substring(0, name.length + 1) === name + "=") {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        document.getElementById("deleteButton").addEventListener("click", function() {
+            var result = confirm("Are you sure you want to delete your account?");
+            if (result) {
+                // AJAX isteğini gerçekleştir
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "/user/delete-account/");
+                xhr.setRequestHeader("Content-Type", "application/json");
+                xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken")); // CSRF token'ını gönder
+                xhr.onload = function() {
+                    if (xhr.status !== 404) {
+                        // Hesap silindiğinde yapılacak işlemler
+                        alert("Account deleted successfully!");
+                        // Kullanıcıyı başka bir sayfaya yönlendirebilirsiniz
+                        window.location.href = "/";  // Ana sayfaya yönlendirme
+                    } else {
+                        // Hesap silme işleminde bir hata oluştuğunda yapılacak işlemler
+                        alert("An error occurred while deleting the account. Please try again later.");
+                    }
+                };
+                xhr.send();
+            }
+        });
+
+
+        function enableUpdateButton() {
+            document.getElementById("submit-button-info").disabled = false;
+        }
+
+        window.addEventListener("DOMContentLoaded", function() {
+            const scrollContainer = document.getElementById("scroll-info-container");
+            const content = scrollContainer.querySelector(".content-scroll");
+
+            // İçeriğin yüksekliğini hesaplayın
+            const contentHeight = content.offsetHeight;
+
+            // Scroll konteynerinin yüksekliğini içeriğin yüksekliği olarak ayarlayın
+            scrollContainer.style.height = contentHeight + "px";
+        });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            var dropdownToggle = document.querySelector(".btn-group .align-items-center");
+            dropdownToggle.addEventListener("click", function() {
+                var dropMenu = document.getElementById("dropMenu");
+                dropMenu.classList.toggle("show");
+            });
+        });
+
+        function openSettingsModal() {
+            var modal = document.getElementById("settingsModal");
+            modal.style.display = "block";
+        }
+
+        function updateFile(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const u_file = document.getElementById('upload-file');
+                if (file.type.startsWith('image/')) {
+                    u_file.src = e.target.result;
+                } else {
+                    u_file.src = "{% static 'icon/chatDoc.png' %}"; // Kendi belirlediğiniz resmi buraya ekleyin
+                }
+                document.getElementById('submit-button').disabled = false;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function updateImage(event) {
+            const image = event.target.files[0];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const u_image = document.getElementById('upload-image');
+                if (image.type.startsWith('image/')) {
+                    u_image.src = e.target.result;
+                } else {
+                    u_image.src = "{% static 'icon/document-image.png' %}"; // Kendi belirlediğiniz resmi buraya ekleyin
+                }
+                document.getElementById('submit-button-image').disabled = false;
+            };
+            reader.readAsDataURL(image);
+        }
+
+        function showSetting() {
+            document.getElementById("showSetting").style.display = "block";
+            document.getElementById("showHelp").style.display = "none";
+        }
+
+        function showHelp() {
+            document.getElementById("showSetting").style.display = "none";
+            document.getElementById("showHelp").style.display = "block";
+        }
+
+        function btnCloseShow(){
+            var modal = document.getElementById("settingsModal");
+            modal.style.display = "none";
+        }
+    </script>
+{% endblock %}

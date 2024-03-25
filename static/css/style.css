@@ -1,0 +1,42 @@
+.nav-content{
+    background-color: rgb(45, 45, 45) !important;
+    color: white !important;
+}
+
+.content{
+    background-color: rgb(83, 79, 79) !important;
+    color: black !important;
+}
+
+.content-row-center{
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+}
+
+.content-center{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+}
+
+
+/* Scroll Bar */
+::-webkit-scrollbar {
+    width: 0px !important;
+    background-color: #eaeaea !important;
+}
+::-webkit-scrollbar-thumb {
+    background-color: #47575e !important;
+}
+::-webkit-scrollbar-thumb:hover {
+    background-color: #39484f !important;
+}
+::-webkit-scrollbar:horizontal{
+    height: 0px !important;
+}
+::-webkit-scrollbar:vertical{
+    width: 0px !important;
+}

@@ -1,0 +1,97 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block head_files %}
+    <link href="{% static 'css/chat.css' %}" rel="stylesheet"> 
+{% endblock %}
+
+{% block content %}
+    <div class="col-3 nav-content text-center" style="height: 100vh;">
+        {% include 'partials/_nav.html' with user=user activeDoc=activeDoc %}
+    </div>
+    <div class="col content text-center" style="height: 100vh;">
+        <div class="chat-container">
+            <div id="chat-content" class="chat-content">
+                <div class="scrollable-chat" id="chat-scroll">
+                    <div class="chat-content-container">
+                        <div id="text-header" class="row my-5" style="height:60vh;">
+                            <h5 id="animatedTitle" style="height:20vh; font-family: 'Courier New', Courier, monospace; font-style: normal; font-size: 40px;" class="text-white">
+                                CHATBOX DOCUMENT AI
+                            </h5>
+
+                            <p class="text-white-50" style="font-family: 'Courier New', Courier, monospace; font-style: italic; font-size: 15px;">
+                                To use CHATDOC AI, please upload documents first
+                            </p>
+                            <p class="text-white-50" style="font-family: 'Courier New', Courier, monospace; font-style: italic; font-size: 15px;">
+                                Then select this document and ask questions to the CHATBOT
+                            </p>
+                            <p class="text-white-50" style="font-family: 'Courier New', Courier, monospace; font-style: italic; font-size: 15px;">
+                                Self-training artificial intelligence will generate answers based on the document uploaded to you
+                            </p>
+                            <p class="text-white-50" style="font-family: 'Courier New', Courier, monospace; font-style: italic; font-size: 15px;">
+                                Answers are generated according to the information in the document
+                            </p>
+                        </div>
+                        {% for doc in user.documents.all %}
+                            {% if doc.id == activeDoc.id %}
+                                {% for msg in doc.messages.all %}
+                                    {% if msg.isChatBox %}
+                                        <!-- GPT ise -->
+                                        <div class="message flex-start">
+                                            <div class="sender">{{msg.sender}}</div>
+                                            <div class="text">{{msg.message}}</div>
+                                        </div>
+                                    {% else %}
+                                        <!-- User ise -->
+                                        <div class="message flex-end">
+                                            <div class="sender">{{msg.sender}}</div>
+                                            <div id="input-text" class="text">{{msg.message}}</div>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+
+            <form action="{% url 'chat' %}" method="post" id="text-form">
+                {% csrf_token %}
+                <div class="input-container">
+                    <input placeholder="Send Message..." id="message" name="message" class="px-5 input btn rounded rounded-5 shadow text-start " style="width: 60vw; height: 10vh; font-size: larger;">
+                    <button class="send m-2 btn rounded rounded-5 shadow" style="width: 4vw;" type="submit" name="document_id" value="{{ activeDoc.id }}" id="sendButton">
+                        <img style="width: 100%;" src="{% static 'icon/send.png' %}" alt="send">
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js_files %}
+    <script src="{% static 'js/chat.js' %}"></script>
+    <script>
+        function activeDoc() {
+            var buttons = document.getElementsByClassName("document");
+    
+            // Diğer butonlardaki aktif durumu ve "hidden" durumunu kaldır
+            for (var i = 0; i < buttons.length; i++) {
+                var button = buttons[i];
+                if (button.classList.contains("active")) {
+                    document.getElementById("text-header").style.display = "none";
+                    break; // Gerekirse, döngüyü sonlandırabilirsiniz
+                }
+            }
+        }
+        activeDoc();
+
+        // Chat içeriği güncellendiğinde scrollu en alta getirme fonksiyonu
+        function scrollToBottom() {
+            var chatScroll = document.getElementById("chat-scroll");
+            chatScroll.scrollTop = chatScroll.scrollHeight;
+        }
+        // Chat içeriği güncellendiğinde scrollu en alta getir
+        scrollToBottom();
+    </script>
+{% endblock %}

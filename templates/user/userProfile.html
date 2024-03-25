@@ -1,0 +1,130 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block title %}
+    {{ user.nick|title }}
+{% endblock title %}
+
+{% block css_files %}
+    <link rel="stylesheet" href="{% static 'css/user/_userProfile.css' %}">
+{% endblock css_files %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-3 col-lg-2 col-12 bg-dark-90" id="profile">
+            <div class="ms-1">{% include 'partials/backBtn.html' with url=request.META.HTTP_REFERER %}</div>
+            <div class="text-center pt-4 m-auto">
+                <img src="https://via.placeholder.com/100" alt="" class="rounded-circle my-3">
+                <p class="text-white fw-semibold my-1">{{ user.name|title }} <br> {{ user.surname|upper }}</p>
+                <div class='m-2'>
+                    <a href="mailto:{{ user.mail }}" target="_blank">
+                        mail
+                    </a>
+                    {% for social in userSocials %}
+                        {% if social.isActive %}
+                            <a href="https://{{ social.url }}{{ social.nick }}" target="_blank">
+                                {{ social.icon }}
+                            </a>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9 col-lg-10 col-12">
+            <div class="row h-100">
+                <div class="col-12" id="photoUser">
+                    <a onClick="changeIcon()" id="changeIconLink" class="top-right">
+                        <img src="{% static 'icons/exchange.png' %}" alt="change" id="changeIcon" class="photo">
+                    </a>
+                    <div class="w-100 text-center container my-3">
+                        <p class="display-3 fst-italic">Fotoğraflarım</p>
+                        {% comment %} <p class="fs-5 fst-italic">“”</p> {% endcomment %}
+                    </div>
+                    <hr>
+                    <div class="w-100 text-center container m-auto content-center">
+                        {% for photo in photos %}
+                            {% if photo.isActive == True %}
+                                <a class="m-2 float-start border border-3 border-success rounded-3" href="{% url 'photoUrl' photo.id %}" id="photoCard">
+                                    <div class="card m-auto">
+                                        <img src="https://via.placeholder.com/{{photo.img}}" class="card-img" alt="photo">
+                                        <div class="card-body">
+                                            <p class="card-text">
+                                                {{ photo.title|truncatewords:3 }}
+                                            </p>
+                                            <p class="card-text">
+                                                {{ photo.description|truncatechars:50 }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </a>
+                            {% endif %}
+                            {% if photo.isActive == False %}
+                                <a class="m-2 float-start border border-3 border-danger rounded-3" href="{% url 'photoUrl' photo.id %}" id="photoCard">
+                                    <div class="card m-auto" style="">
+                                        <img src="https://via.placeholder.com/{{photo.img}}" class="card-img" alt="photo">
+                                        <div class="card-body">
+                                            <p class="card-text">
+                                                {{ photo.title|truncatewords:3 }}
+                                            </p>
+                                            <p class="card-text">
+                                                {{ photo.description|truncatechars:50 }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </a>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col-12 d-none" id="exhibitonUser">
+                    <a onClick="changeIcon()" id="changeIconLink" class="photo top-right-top20">
+                        <img src="{% static 'icons/exchange.png' %}" alt="change" id="changeIcon">
+                    </a>
+                    <div class="w-100 text-center container my-3">
+                        <p class="display-3 fst-italic">Sergilerim</p>
+                        {% comment %} <p class="fs-5 fst-italic">“”</p> {% endcomment %}
+                    </div>
+                    <hr>
+                    <div class="w-100 text-center container m-auto content-center">
+                        {% for exhibition in exhibitions %}
+                            {% if exhibition.isActive == True %}
+                                <a class="m-2 float-start border border-3 border-success rounded-3" href="{% url 'exhibitionUrl' exhibition.id %}" id="photoCard">
+                                    <div class="card m-auto" style="">
+                                        <img src="https://via.placeholder.com/{{exhibition.exhibitionPhoto}}" class="card-img" alt="exhibition">
+                                        <div class="card-body">
+                                            <p class="card-text">
+                                                {{ exhibition.title|truncatewords:3 }}
+                                            </p>
+                                            <p class="card-text">
+                                                {{ exhibition.description|truncatechars:50 }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </a>
+                            {% endif %}
+                            {% if exhibition.isActive == False %}
+                                <a class="m-2 float-start border border-3 border-danger rounded-3" href="{% url 'exhibitionUrl' exhibition.id %}" id="photoCard">
+                                    <div class="card m-auto" style="">
+                                        <img src="https://via.placeholder.com/{{exhibition.img}}" class="card-img" alt="exhibition">
+                                        <div class="card-body">
+                                            <p class="card-text">
+                                                {{ exhibition.title|truncatewords:3 }}
+                                            </p>
+                                            <p class="card-text">
+                                                {{ exhibition.description|truncatechars:50 }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </a>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block js_files %}
+    <script src="{% static 'js/userProfile.js' %}"></script>
+{% endblock js_files %}

@@ -1,0 +1,229 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block head_files %}
+    <link rel="stylesheet" href="{% static 'css/user/partials/iconHideShow.css' %}">
+    <style>
+        body{
+            background-color: rgb(83, 79, 79) !important;
+            height: 100vh !important;
+        }
+
+        a{
+            text-decoration: none !important;
+        }
+
+        #container-register{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        #register{
+            margin: auto !important;
+        }
+
+        #backPage{
+            position: absolute;
+            top: 5%;
+        }
+
+        #backPage a{
+            background-color: rgb(45, 45, 45) !important;
+        }
+
+        #backRegister{
+            position: relative;
+            top: 5%;
+            right: 50%;
+        }
+
+        #backRegister a{
+            background-color: rgb(83, 79, 79) !important;
+        }
+
+        .card-col-2{
+            background-color: #D9D9D9 !important;
+            padding: 5% !important;
+            border-radius: 0px 10px 10px 0px !important;
+        }
+
+        .card-col-1{
+            padding: 10% !important;
+            color: white !important;
+            border-radius: 10px 0 0 10px !important;
+        }
+
+        .card-col-2 button{
+            color: white !important;
+            font-weight: 600 !important;
+            background-color: rgb(45, 45, 45) !important;
+        }
+
+        .card-col-1 button{
+            border-color: white !important;
+            border-width: 2px !important;
+            font-weight: 600 !important;
+            color: white !important;
+            background-color: transparent !important;
+            margin-top: 20% !important;
+        }
+
+        @media(max-width:768px){
+            .card-col-2{
+                border-radius: 0px 0px 10px 10px !important;
+            }
+            .card-col-1{
+                border-radius: 10px 10px 0 0 !important;
+                padding: 5% !important;
+            }
+            .card-col-1 button{
+                margin-top: 2% !important;
+            }
+            #register{
+                margin-bottom: 10% !important;
+            }
+        }
+
+        .bg-card{
+            background: linear-gradient(90deg, rgb(45, 45, 45) 0%, transparent 100%);
+            backdrop-filter: blur(20px) !important;
+        }
+
+        /* CSS for Google Sign-In button */
+        #googleSignIn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        #googleSignInButton {
+            background-color: #fff;
+            color: #000;
+            border: none;
+            font-size: 14px;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div id="backPage">
+        <a class="btn btn-dark" href="{% url 'chat' %}">
+            <img src="{% static 'icon/turn-back.png' %}" alt="back" style="width: 2vw;">
+        </a>
+    </div>
+    <div id="container-register">
+        <div class="w-75 content-center p-5" id='register'>
+            <div class="container-fluid">
+                <div class="row shadow">
+                    <div class="col-md-6 col-12 card-col-1 bg-card">
+                        <div class="p-2 text-center">
+                            <h3>Welcome !</h3>
+                            <p class="fst-italic">If you are one of us, don't waste time to train your documents with artificial intelligence. Click here now.</p>
+                            <a href="{% url 'login' %}">
+                                <button class="btn btn-sm rounded rounded-5">SIGN IN</button>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-12 card-col-2 text-center">
+                        <h3>Sign Up</h3>
+                        <!-- Google Sign-In button -->
+                        <div id="googleSignIn">
+                            <div id="googleSignInButton" class="btn">
+                                <img style="width: 1.5vw;" src="{% static 'icon/google.png' %}" alt="google">
+                            </div>
+                        </div>
+                        <br>
+                        <form class="m-auto m-2" id="verifyCodeForm" action="{% url 'verify' %}" method="post">
+                            {% csrf_token %}
+                            <div id="backRegister">
+                                <a class="btn btn-dark" href="{% url 'register' %}">
+                                    <img src="{% static 'icon/back.png' %}" alt="back" style="width: 1vw;">
+                                </a>
+                            </div>
+                            {% if error %}
+                                <div class="alert alert-danger">
+                                    {{error}}
+                                </div>
+                            {% endif %}
+                            <div class="mt-4">We sent a code to your email address</div>
+                            <br>
+                            <input type="number" placeholder="Number Code" class="form-control mx-3 mt-2" name="verification-code">
+                            <br>
+                            <button class="btn btn-sm rounded rounded-5" type="submit">VERIFY CODE</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block js_files %}
+    <script>
+        function changeIcon(){
+            var icon =document.getElementById('iconHideShow')
+            if (icon.className == "hide-show") {
+                document.getElementById('iconHideShow').src = "/static/icon/show.png"
+                document.getElementById('hideShow').type = 'text';
+                icon.classList.remove('hide-show');
+                icon.classList.add('show-hide');
+            } 
+            else if(icon.className == "show-hide") {
+                document.getElementById('iconHideShow').src = "/static/icon/hide.png"
+                document.getElementById('hideShow').type = 'password';
+                icon.classList.remove('show-hide');
+                icon.classList.add('hide-show');
+            }
+        } 
+
+        function onGoogleSignUp(googleUser) {
+            var profile = googleUser.getBasicProfile();
+            var email = profile.getEmail();
+            var name = profile.getName();
+            var form = document.getElementById('registerForm');
+            var emailInput = form.querySelector('input[type="email"]');
+            var nameInput = form.querySelector('input[placeholder="Name"]');
+            var surnameInput = form.querySelector('input[placeholder="Surname"]');
+            emailInput.value = email;
+            nameInput.value = name;
+        }
+
+        function onGoogleSignUpError(error) {
+            console.error('Google Sign-Up Error:', error);
+        }
+
+        function initGoogleSignUp() {
+            gapi.load('auth2', function() {
+                gapi.auth2.init({
+                    client_id: 'YOUR_GOOGLE_CLIENT_ID',
+                    scope: 'email profile'
+                }).then(function(auth2) {
+                    var googleSignUpButton = document.getElementById('googleSignUpButton');
+                    googleSignUpButton.addEventListener('click', function() {
+                        auth2.signIn().then(onGoogleSignUp, onGoogleSignUpError);
+                    });
+                });
+            });
+        }
+
+        function loadGoogleSignUpAPI() {
+            var script = document.createElement('script');
+            script.src = 'https://apis.google.com/js/platform.js';
+            script.onload = function() {
+                initGoogleSignUp();
+            };
+            document.head.appendChild(script);
+        }
+
+        loadGoogleSignUpAPI();
+    </script>
+{% endblock js_files %}
+
